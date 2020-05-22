@@ -22,7 +22,7 @@ exports.checkBody = (req, res, next) => {
   if (!name || !price) {
     return res.status(400).json({
       status: 'fail',
-      message: "Missing name or price",
+      message: 'Missing name or price',
     });
   }
 
@@ -54,7 +54,7 @@ exports.getTour = (req, res) => {
 
 exports.createTour = (req, res) => {
   const newID = tours[tours.length - 1].id + 1;
-  const newTour = Object.assign({ id: newID }, req.body);
+  const newTour = { id: newID, ...req.body };
 
   tours.push(newTour);
   fs.writeFile(
