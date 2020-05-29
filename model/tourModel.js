@@ -12,10 +12,7 @@ const tourSchema = new mongoose.Schema(
         40,
         'A tour name must have less than 40 characters',
       ],
-      minlength: [
-        10,
-        'A tour name must have at least 10 characters',
-      ],
+      minlength: [10, 'A tour name must have at least 10 characters'],
     },
     duration: {
       type: Number,
@@ -30,8 +27,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a difficulty'],
       enum: {
         values: ['easy', 'medium', 'difficult'],
-        message:
-          'Difficulty is either: easy, medium or difficult',
+        message: 'Difficulty is either: easy, medium or difficult',
       },
     },
     price: {
