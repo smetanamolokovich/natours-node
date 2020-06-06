@@ -14,6 +14,11 @@ router.patch(
   authController.protect,
   authController.updatePassword
 );
+router.patch(
+  '/update-current-user',
+  authController.protect,
+  userController.updateCurrentUser
+);
 
 router
   .route('/')
