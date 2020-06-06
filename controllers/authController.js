@@ -12,6 +12,18 @@ const signToken = (id) => {
   });
 };
 
+const createAndSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -22,15 +34,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createAndSendToken(newUser, 201, res);
 });
 
 exports.signIn = catchAsync(async (req, res, next) => {
@@ -54,11 +58,7 @@ exports.signIn = catchAsync(async (req, res, next) => {
   }
 
   // If everything ok, send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createAndSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -198,10 +198,29 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
   // Update changedPasswordAt property for the user
   // Log the user in, send JWT
-  const token = signToken(user._id);
+  createAndSendToken(user, 200, res);
+});
 
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  const { passwordCurrent, password, passwordConfirm } = req.body;
+
+  // Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // Check if POSTed current password is correct
+
+  if (!(await user.correctPassword(passwordCurrent, user.password))) {
+    return next(
+      new AppError('Your password is wrong. Please, try again', 401)
+    );
+  }
+
+  // If so, update password
+  user.password = password;
+  user.passwordConfirm = passwordConfirm;
+
+  await user.save();
+
+  // Log user in, send JWT
+  createAndSendToken(user, 200, res);
 });
