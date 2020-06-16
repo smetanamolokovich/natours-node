@@ -25,10 +25,8 @@ router.delete(
   userController.deleteCurrentUser
 );
 
-router
-  .route('/')
-  .get(userController.getAllUsers)
-  .post(userController.createUser);
+router.route('/').get(userController.getAllUsers);
+//.post(userController.createUser);
 
 router
   .route('/:id')
