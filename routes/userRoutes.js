@@ -14,15 +14,22 @@ router.patch(
   authController.protect,
   authController.updatePassword
 );
-router.patch(
-  '/update-current-user',
+
+router.get(
+  '/me',
   authController.protect,
-  userController.updateCurrentUser
+  userController.getMe,
+  userController.getUser
+);
+router.patch(
+  '/update-me',
+  authController.protect,
+  userController.updateMe
 );
 router.delete(
-  '/delete-current-user',
+  '/delete-me',
   authController.protect,
-  userController.deleteCurrentUser
+  userController.deleteMe
 );
 
 router.route('/').get(userController.getAllUsers);

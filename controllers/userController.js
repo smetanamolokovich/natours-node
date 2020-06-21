@@ -14,7 +14,7 @@ const filtereObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.updateCurrentUser = catchAsync(async (req, res, next) => {
+exports.updateMe = catchAsync(async (req, res, next) => {
   // Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
@@ -46,7 +46,12 @@ exports.updateCurrentUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteCurrentUser = catchAsync(async (req, res, next) => {
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
+exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
 
   res.status(204).json({
