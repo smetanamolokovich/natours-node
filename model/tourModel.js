@@ -123,6 +123,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('reviews', {
   ref: 'Review',
