@@ -380,7 +380,7 @@ body {
     #7dd56f,
     #28b487
   );
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 .heading-box {
@@ -1142,7 +1142,7 @@ body {
     #7dd56f,
     #28b487
   );
-  opacity: 0.4;
+  opacity: 0.5;
 }
 .card__picture-img {
   -o-object-fit: cover;
