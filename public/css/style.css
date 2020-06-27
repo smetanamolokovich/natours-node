@@ -380,7 +380,7 @@ body {
     #7dd56f,
     #28b487
   );
-  opacity: 0.85;
+  opacity: 0.3;
 }
 
 .heading-box {
@@ -612,6 +612,20 @@ body {
   -ms-scroll-snap-type: x mandatory;
   scroll-snap-type: x mandatory;
 }
+.reviews::-webkit-scrollbar {
+  width: 5px;
+}
+
+.reviews::-webkit-scrollbar-thumb {
+  background: #444444c4;
+  border-radius: 20px;
+}
+
+.reviews::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 20px;
+}
+
 .reviews__card {
   width: 30rem;
   padding: 4rem;
