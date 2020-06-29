@@ -40,3 +40,7 @@ exports.getAccount = (req, res) => {
     title: 'Your account',
   });
 };
+
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  next();
+});

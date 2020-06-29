@@ -3,10 +3,12 @@ import '@babel/polyfill';
 import 'regenerator-runtime/runtime';
 
 import { login, logout } from './login';
+import { updateUserData } from './updateUserData';
 import { displayMap } from './mapbox';
 
 const mapBox = document.getElementById('map');
-const loginForm = document.querySelector('.form');
+const loginForm = document.querySelector('.form--login');
+const updateUserDataForm = document.querySelector('.form-user-data');
 const logoutBtn = document.querySelector('.nav__el--logout');
 
 if (mapBox) {
@@ -27,4 +29,14 @@ if (loginForm) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
+}
+
+if (updateUserDataForm) {
+  updateUserDataForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+
+    updateUserData(name, email);
+  });
 }
