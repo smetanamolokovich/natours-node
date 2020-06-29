@@ -1,59 +1,50 @@
 /* eslint-disable */
 import '@babel/polyfill';
-import 'regenerator-runtime/runtime';
-
+import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
-import { displayMap } from './mapbox';
 
+// DOM ELEMENTS
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
-const updateUserDataForm = document.querySelector('.form-user-data');
-const updateUserPasswordForm = document.querySelector(
-  '.form-user-settings'
+const logOutBtn = document.querySelector('.nav__el--logout');
+const userDataForm = document.querySelector('.form-user-data');
+const userPasswordForm = document.querySelector(
+  '.form-user-password'
 );
-const logoutBtn = document.querySelector('.nav__el--logout');
+const bookBtn = document.getElementById('book-tour');
 
+// DELEGATION
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
-
   displayMap(locations);
 }
 
-if (loginForm) {
+if (loginForm)
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-
     login(email, password);
   });
-}
 
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', logout);
-}
+if (logOutBtn) logOutBtn.addEventListener('click', logout);
 
-if (updateUserDataForm) {
-  updateUserDataForm.addEventListener('submit', async (e) => {
+if (userDataForm)
+  userDataForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    const form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
 
-    document.querySelector('.btn--save-data').innerHTML =
-      'Updating...';
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-
-    await updateSettings({ name, email }, 'data');
-
-    document.querySelector('.btn--save-data').innerHTML =
-      'Data saved';
+    updateSettings(form, 'data');
   });
-}
 
-if (updateUserPasswordForm) {
-  updateUserPasswordForm.addEventListener('submit', async (e) => {
+if (userPasswordForm)
+  userPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    document.querySelector('.btn--save-password').innerHTML =
+    document.querySelector('.btn--save-password').textContent =
       'Updating...';
 
     const passwordCurrent = document.getElementById(
@@ -63,17 +54,14 @@ if (updateUserPasswordForm) {
     const passwordConfirm = document.getElementById(
       'password-confirm'
     ).value;
-
     await updateSettings(
       { passwordCurrent, password, passwordConfirm },
       'password'
     );
 
-    document.querySelector('.btn--save-password').innerHTML =
-      'Password saved';
-
+    document.querySelector('.btn--save-password').textContent =
+      'Save password';
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
   });
-}
