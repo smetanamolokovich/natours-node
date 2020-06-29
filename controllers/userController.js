@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handleFactory');
 
-const filtereObj = (obj, ...allowedFields) => {
+const filteredObj = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((key) => {
     if (allowedFields.includes(key)) {
@@ -57,7 +57,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   // Update user document
-  const filteredBody = filtereObj(req.body, 'name', 'email');
+  const filteredBody = filteredObj(req.body, 'name', 'email');
+  if (req.file) filteredBody.photo = req.file.filename;
 
   const user = await User.findByIdAndUpdate(
     req.user.id,
