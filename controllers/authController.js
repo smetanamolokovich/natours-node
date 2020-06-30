@@ -4,7 +4,7 @@ const { promisify } = require('util');
 const User = require('../model/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -17,15 +17,13 @@ const createAndSendToken = (user, statusCode, res) => {
 
   const cookieOptions = {
     expires: new Date(
-      Date.now() +
-        process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
 
   // HTTPS only
-  if (process.env.NODE_ENV === 'production')
-    cookieOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -50,6 +48,8 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
     role: req.body.role,
   });
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  await new Email(newUser, url).sendWelcome();
 
   createAndSendToken(newUser, 201, res);
 });
@@ -59,18 +59,13 @@ exports.signIn = catchAsync(async (req, res, next) => {
 
   // Check if email and pswd exist
   if (!email || !password) {
-    return next(
-      new AppError('Please provide email and password!', 400)
-    );
+    return next(new AppError('Please provide email and password!', 400));
   }
 
   // Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
 
-  if (
-    !user ||
-    !(await user.correctPassword(password, user.password))
-  ) {
+  if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401));
   }
 
@@ -100,37 +95,25 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token)
     return next(
-      new AppError(
-        'You are not loged in. Please log in to get an access!',
-        401
-      )
+      new AppError('You are not loged in. Please log in to get an access!', 401)
     );
 
   // Verification token
-  const decoded = await promisify(jwt.verify)(
-    token,
-    process.env.JWT_SECRET
-  );
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // Check if user still exists
   const currentUser = await User.findById(decoded.id);
 
   if (!currentUser) {
     return next(
-      new AppError(
-        'The user belonging to the token no longer exist.',
-        401
-      )
+      new AppError('The user belonging to the token no longer exist.', 401)
     );
   }
 
   // Check if user changed password after the JWT was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
-      new AppError(
-        'User recently changed password. Please log in again.',
-        401
-      )
+      new AppError('User recently changed password. Please log in again.', 401)
     );
   }
 
@@ -173,10 +156,7 @@ exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError(
-          'You do not have permission to perform this action',
-          403
-        )
+        new AppError('You do not have permission to perform this action', 403)
       );
     }
 
@@ -188,9 +168,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
-    return next(
-      new AppError(`There is no user with this email address.`, 404)
-    );
+    return next(new AppError(`There is no user with this email address.`, 404));
   }
 
   // Generate the random reset
@@ -207,11 +185,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\n If you didn't forget your password, please ignore this email!`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 min)',
-      message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: 'Your password reset token (valid for 10 min)',
+    //   message,
+    // });
 
     res.status(200).json({
       status: 'success',
@@ -224,9 +202,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     return next(
-      new AppError(
-        'There was an error sending the email. Try again later'
-      )
+      new AppError('There was an error sending the email. Try again later')
     );
   }
 });
@@ -268,9 +244,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // Check if POSTed current password is correct
 
   if (!(await user.correctPassword(passwordCurrent, user.password))) {
-    return next(
-      new AppError('Your password is wrong. Please, try again', 401)
-    );
+    return next(new AppError('Your password is wrong. Please, try again', 401));
   }
 
   // If so, update password

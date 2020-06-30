@@ -12,7 +12,14 @@ module.exports = class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      return;
+      // Sendgrid
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD,
+        },
+      });
     }
 
     return nodemailer.createTransport({
@@ -27,14 +34,17 @@ module.exports = class Email {
 
   // Send the actual email
   async send(template, subject) {
-    //  Render template with pug
-    const html = pug.render(`${__dirname}/../views/emails/${template}.pug`, {
-      filename: this.firstName,
-      url: this.url,
-      subject,
-    });
+    // 1) Render HTML based on a pug template
+    const html = pug.renderFile(
+      `${__dirname}/../views/emails/${template}.pug`,
+      {
+        firstName: this.firstName,
+        url: this.url,
+        subject,
+      }
+    );
 
-    // Define email options
+    // 2) Define email options
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -43,11 +53,18 @@ module.exports = class Email {
       text: htmlToText.fromString(html),
     };
 
-    // Create a transport and send email
+    // 3) Create a transport and send email
     await this.newTransport().sendMail(mailOptions);
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Natours!');
+    await this.send('welcome', 'Welcome to the Natours Family!');
+  }
+
+  async sendPasswordReset() {
+    await this.send(
+      'passwordReset',
+      'Your password reset token (valid for only 10 minutes)'
+    );
   }
 };

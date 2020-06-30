@@ -12,12 +12,10 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findOne({ slug: req.params.slug }).populate(
-    {
-      path: 'reviews',
-      fields: 'review, rating, user',
-    }
-  );
+  const tour = await Tour.findOne({ slug: req.params.slug }).populate({
+    path: 'reviews',
+    fields: 'review, rating, user',
+  });
 
   if (!tour) {
     next(new AppError('There is no such tour name.', 404));
