@@ -1,26 +1,53 @@
 const nodemailer = require('nodemailer');
+const pug = require('pug');
+const htmlToText = require('html-to-text');
 
-const sendEmail = async (options) => {
-  // Create a transporter
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  // Define the email options
+module.exports = class Email {
+  constructor(user, url) {
+    this.to = user.email;
+    this.firstName = user.name.split(' ')[0];
+    this.url = url;
+    this.from = `Aituar Abdil <${process.env.EMAIL_FROM}>`;
+  }
 
-  const mailOptions = {
-    from: 'Aituar Abdil <aituufs@gmail.com>',
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
-  };
+  newTransport() {
+    if (process.env.NODE_ENV === 'production') {
+      return;
+    }
 
-  // Actually send the email
-  await transporter.sendMail(mailOptions);
+    return nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+  }
+
+  // Send the actual email
+  async send(template, subject) {
+    //  Render template with pug
+    const html = pug.render(`${__dirname}/../views/emails/${template}.pug`, {
+      filename: this.firstName,
+      url: this.url,
+      subject,
+    });
+
+    // Define email options
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: htmlToText.fromString(html),
+    };
+
+    // Create a transport and send email
+    await this.newTransport().sendMail(mailOptions);
+  }
+
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Natours!');
+  }
 };
-
-module.exports = sendEmail;
