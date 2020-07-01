@@ -1,8 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../model/tourModel');
 const catchAsync = require('../utils/catchAsync');
-const factory = require('./handleFactory');
-const AppError = require('../utils/AppError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // Get the currently booked tour
@@ -19,7 +17,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: `${tour.summary}`,
-        images: [`https://www.natours.dev/img/tours/${tour.imageCover}`],
+        images: [`https://www.natours.dev/img/tour/${tour.imageCover}`],
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1,
