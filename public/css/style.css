@@ -375,11 +375,7 @@ body {
     from(#7dd56f),
     to(#28b487)
   );
-  background-image: linear-gradient(
-    to right bottom,
-    #7dd56f,
-    #28b487
-  );
+  background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
   opacity: 0.5;
 }
 
@@ -612,19 +608,6 @@ body {
   -ms-scroll-snap-type: x mandatory;
   scroll-snap-type: x mandatory;
 }
-.reviews::-webkit-scrollbar {
-  width: 5px;
-}
-
-.reviews::-webkit-scrollbar-thumb {
-  background: #444444c4;
-  border-radius: 20px;
-}
-
-.reviews::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 20px;
-}
 
 .reviews__card {
   width: 30rem;
@@ -797,11 +780,7 @@ body {
     from(#7dd56f),
     to(#28b487)
   );
-  background-image: linear-gradient(
-    to right bottom,
-    #7dd56f,
-    #28b487
-  );
+  background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
   padding: 4rem 0;
 }
 .user-view__content {
@@ -1137,11 +1116,7 @@ body {
     from(#7dd56f),
     to(#28b487)
   );
-  background-image: linear-gradient(
-    to right bottom,
-    #7dd56f,
-    #28b487
-  );
+  background-image: linear-gradient(to right bottom, #7dd56f, #28b487);
   opacity: 0.5;
 }
 .card__picture-img {
