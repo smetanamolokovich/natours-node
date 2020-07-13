@@ -26,6 +26,11 @@ app.enable('trust proxy');
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+// Implement CORS
+app.use(cors());
+
+app.options('*', cors());
+
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -33,7 +38,6 @@ app.use(compression());
 
 // MIDDLEWARES
 app.use(helmet()); // Security HTTP headers
-app.use(cors());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
