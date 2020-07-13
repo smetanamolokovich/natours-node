@@ -8,10 +8,7 @@ process.on('uncaughtException', (err) => {
 
 dotenv.config({ path: './config.env' });
 
-const DB = process.env.DB_HOST.replace(
-  '<PASSWORD>',
-  process.env.DB_PASSWORD
-);
+const DB = process.env.DB_HOST.replace('<PASSWORD>', process.env.DB_PASSWORD);
 
 mongoose
   .connect(DB, {
@@ -34,5 +31,12 @@ process.on('unhandledRejection', (err) => {
   console.log(`${err.name}: ${err.message}`);
   server.close(() => {
     process.exit(1);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECIEVED. Shutting down gracefully.');
+  server.close(() => {
+    console.log('Process terminated.');
   });
 });
