@@ -8,10 +8,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       required: [true, 'A tour must have a name'],
-      maxlength: [
-        40,
-        'A tour name must have less than 40 characters',
-      ],
+      maxlength: [40, 'A tour name must have less than 40 characters'],
       minlength: [10, 'A tour name must have at least 10 characters'],
     },
     duration: {
@@ -52,8 +49,7 @@ const tourSchema = new mongoose.Schema(
           // this only points to current doc on NEW document creation
           return val < this.price;
         },
-        message:
-          'Discount price ({VALUE}) should be below regular price',
+        message: 'Discount price ({VALUE}) should be below regular price',
       },
     },
     summary: {
@@ -142,7 +138,7 @@ tourSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
-  });
+  }).populate('reviews');
   next();
 });
 
