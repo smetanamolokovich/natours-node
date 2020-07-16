@@ -3,6 +3,7 @@ import '@babel/polyfill';
 import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { register } from './register';
+import { sendReview } from './review';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
@@ -11,6 +12,7 @@ import { showAlert } from './alerts';
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const registerForm = document.querySelector('.form--register');
+const reviewForm = document.querySelector('.form--review');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
@@ -85,3 +87,20 @@ if (bookBtn) {
 
 const alertMessage = document.querySelector('body').dataset.alert;
 if (alertMessage) showAlert('success', alertMessage, 10);
+
+if (reviewForm) {
+  const { tourId } = reviewForm.dataset;
+  const review = document.getElementById('review');
+  const radios = document.getElementsByName('rating');
+  let rating;
+
+  for (let i = 0, length = radios.length; i < length; i++) {
+    radios[i].addEventListener('click', function () {
+      rating = this.value;
+    });
+  }
+  reviewForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await sendReview(tourId, review.value, +rating);
+  });
+}

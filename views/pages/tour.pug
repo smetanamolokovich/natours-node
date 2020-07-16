@@ -92,16 +92,52 @@ block content
         +reviewCard(review)
 
   section.section-cta
-    .cta
-      .cta__img.cta__img--logo
-        img(src='/img/logo-white.png', alt='Natours logo')
-      img.cta__img.cta__img--1(src=`/img/tours/${tour.images[1]}`, alt=`Image 1`)
-      img.cta__img.cta__img--2(src=`/img/tours/${tour.images[2]}`, alt='Image 2')
-      .cta__content
-        h2.heading-secondary What are you waiting for?
-        p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
+    if isBooked
+      .review
+        h2.heading-secondary.ma-bt-lg Share with your impressions
+        form.form.form--review(data-tour-id=`${tour.id}`)
+          .form__group
+            label.form__label(for='review') LEAVE YOUR REVIEW:
+            textarea.form__input#review(name="review", cols="30", rows="10" placeholder="Write your review here...")
+          svg.sprite
+            path#star(viewbox='0 0 28 28' d='M13.996,22.501 L22.649,27.997 L20.352,17.637 L27.996,10.667 L17.930,9.768 L13.996,-0.003 L10.063,9.768 L-0.003,10.667 L7.641,17.637 L5.345,27.997 L13.996,22.501 Z')
+          .rating__wrapper
+            .rating__heading PLEASE RATE:
+            .rating__group
+              input#star-5.rating__input(type='radio' name='rating' value='5')
+              label.rating__label(for='star-5')
+                svg.rating__star
+                  use(xlink:href='#star')
+              input#star-4.rating__input(type='radio' name='rating' value='4')
+              label.rating__label(for='star-4')
+                svg.rating__star
+                  use(xlink:href='#star')
+              input#star-3.rating__input(type='radio' name='rating' value='3')
+              label.rating__label(for='star-3')
+                svg.rating__star
+                  use(xlink:href='#star')
+              input#star-2.rating__input(type='radio' name='rating' value='2')
+              label.rating__label(for='star-2')
+                svg.rating__star
+                  use(xlink:href='#star')
+              input#star-1.rating__input(type='radio' name='rating' value='1')
+              label.rating__label(for='star-1')
+                svg.rating__star
+                  use(xlink:href='#star')
+          .form__group
+            button.btn.btn--green.btn--review Send review
 
-        if user
-          button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
-        else
-          a.btn.btn--green.span-all-rows(href="/login") Sign in to book
+    else
+      .cta
+        .cta__img.cta__img--logo
+          img(src='/img/logo-white.png', alt='Natours logo')
+        img.cta__img.cta__img--1(src=`/img/tours/${tour.images[1]}`, alt=`Image 1`)
+        img.cta__img.cta__img--2(src=`/img/tours/${tour.images[2]}`, alt='Image 2')
+        .cta__content
+          h2.heading-secondary What are you waiting for?
+          p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
+
+          if user
+            button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+          else
+            a.btn.btn--green.span-all-rows(href="/login") Sign in to book
