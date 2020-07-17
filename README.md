@@ -12,7 +12,7 @@ Built using modern technologies: node.js, express, mongoDB, mongoose, pug and et
  - **Web**
 	 - ~~Implement a **sign up form**, similar to the login form;~~
 	 - ~~On the tour detail page, if a user has taken a tour, then allow **add a review directly on the website**. Implement a form for this;~~
-	 - **Hide the entire booking section** on the tour detail page if current user has already booked the tour (also prevent duplocate bookings on the model);
+	 - ~~**Hide the entire booking section** on the tour detail page if current user has already booked the tour (also prevent duplicate bookings on the model);~~
 	 - Implement **"like tour" functionality**, with favourite tour page;
 	 -  On the user account page, implement the **"My Reviews"** page, where all review are displayed, and user can edit them. 
 

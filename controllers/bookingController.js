@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const Booking = require('../model/bookingModel');
 const factory = require('./handleFactory');
 const User = require('../model/userModel');
+const AppError = require('../utils/AppError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // 1) Get the currently booked tour
@@ -68,6 +69,20 @@ exports.webhookCheckout = (req, res, next) => {
     createBookingCheckout(event.data.object);
 
   res.status(200).json({ received: true });
+};
+
+exports.preventDuplicates = async (req, res, next) => {
+  if (!req.body.tour) req.body.tour = req.params.tourID;
+  if (!req.body.user) req.body.user = req.user.id;
+
+  const bookings = await Booking.find({ user: req.user.id });
+  const toursIDs = bookings.map((el) => el.tour.id);
+
+  if (toursIDs.includes(req.params.tourID)) {
+    return next(new AppError('User has already booked current tour.', 403));
+  }
+
+  next();
 };
 
 exports.createBooking = factory.createOne(Booking);
