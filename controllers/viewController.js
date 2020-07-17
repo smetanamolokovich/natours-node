@@ -18,8 +18,13 @@ exports.getTour = catchAsync(async (req, res, next) => {
     fields: 'review, rating, user',
   });
 
-  const bookings = await Booking.find({ user: res.locals.user._id });
-  const tourIDs = bookings.map((el) => el.tour.id);
+  let tourIDs;
+  let isBooked;
+  if (res.locals.user) {
+    const bookings = await Booking.find({ user: res.locals.user._id });
+    tourIDs = bookings.map((el) => el.tour.id);
+    isBooked = tourIDs.includes(tour.id);
+  }
 
   if (!tour) {
     next(new AppError('There is no such tour name.', 404));
@@ -28,7 +33,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   res.status(200).render('pages/tour', {
     title: tour.name,
     tour,
-    isBooked: tourIDs.includes(tour.id),
+    isBooked,
   });
 });
 
