@@ -2,6 +2,7 @@ const Tour = require('../model/tourModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const Booking = require('../model/bookingModel');
+const Review = require('../model/reviewModel');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
@@ -19,13 +20,20 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 
   let tourIDs;
+  let reviewedTourIDs;
   let isBooked;
+  let isReviewed;
   if (res.locals.user) {
     const bookings = await Booking.find({ user: res.locals.user._id });
     tourIDs = bookings.map((el) => el.tour.id);
     isBooked = tourIDs.includes(tour.id);
-  }
 
+    const reviews = await Review.find({ user: res.locals.user._id }).populate(
+      'tour'
+    );
+    reviewedTourIDs = reviews.map((el) => el.tour.id);
+    isReviewed = reviewedTourIDs.includes(tour.id);
+  }
   if (!tour) {
     next(new AppError('There is no such tour name.', 404));
   }
@@ -34,6 +42,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     title: tour.name,
     tour,
     isBooked,
+    isReviewed,
   });
 });
 
