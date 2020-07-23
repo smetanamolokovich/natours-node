@@ -10357,6 +10357,7 @@ if (loginForm) loginForm.addEventListener('submit', function (e) {
 if (registerForm) {
   registerForm.addEventListener('submit', function (e) {
     e.preventDefault();
+    document.querySelector('.btn--register').textContent = 'Loading...';
     var name = document.getElementById('name').value;
     var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
@@ -10486,7 +10487,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49814" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52019" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
