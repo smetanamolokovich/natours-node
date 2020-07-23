@@ -2,6 +2,10 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const AppError = require('../utils/AppError');
+
+const Review = require('./reviewModel');
+const Booking = require('./bookingModel');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -111,6 +115,22 @@ userSchema.methods.createPasswordResetToken = function () {
 
   return resetToken;
 };
+
+userSchema.pre('remove', async function (next) {
+  try {
+    // Delete reviews related to current user
+    await Review.remove({
+      user: { $in: this._id },
+    });
+    // Delete bookings related to current user
+    await Booking.remove({
+      user: { $in: this._id },
+    });
+    next();
+  } catch (err) {
+    next(new AppError(err.message, 400));
+  }
+});
 
 const User = mongoose.model('User', userSchema);
 

@@ -103,4 +103,24 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.updateUser = factory.updateOne(User);
-exports.deleteUser = factory.deleteOne(User);
+
+exports.deleteUser = (req, res, next) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) return next(new AppError('No document found with that ID', 404));
+
+    user.remove();
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  });
+
+  // if (!doc) {
+  //   return next(new AppError('No document found with that ID', 404));
+  // }
+
+  // res.status(204).json({
+  //   status: 'success',
+  //   data: null,
+  // });
+};
