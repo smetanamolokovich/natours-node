@@ -10339,7 +10339,7 @@ var registerForm = document.querySelector('.form--register');
 var reviewForm = document.querySelector('.form--review');
 var logOutBtn = document.querySelector('.nav__el--logout');
 var userDataForm = document.querySelector('.form-user-data');
-var userPasswordForm = document.querySelector('.form-user-password');
+var userPasswordForm = document.querySelector('.form-user-settings');
 var bookBtn = document.getElementById('book-tour'); // DELEGATION
 
 if (mapBox) {
@@ -10486,7 +10486,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "41991" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51899" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
