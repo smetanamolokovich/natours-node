@@ -74,7 +74,18 @@ exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
-exports.deleteTour = factory.deleteOne(Tour);
+
+exports.deleteTour = (req, res, next) => {
+  Tour.findById(req.params.id, (err, tour) => {
+    if (err) return next(new AppError('No document found with that ID', 404));
+
+    tour.remove();
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  });
+};
 
 exports.getStatistics = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([

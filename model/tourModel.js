@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const AppError = require('../utils/AppError');
+
+const Review = require('./reviewModel');
+const Booking = require('./bookingModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -171,6 +175,22 @@ tourSchema.pre(/^find/, function (next) {
 
 //   next();
 // });
+
+tourSchema.pre('remove', async function (next) {
+  try {
+    // Delete reviews related to current tour
+    await Review.remove({
+      tour: { $in: this._id },
+    });
+    // Delete bookings related to current tour
+    await Booking.remove({
+      tour: { $in: this._id },
+    });
+    next();
+  } catch (err) {
+    next(new AppError(err.message, 400));
+  }
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 
