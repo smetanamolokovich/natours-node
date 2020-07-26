@@ -6,6 +6,7 @@ block admin
 
     #reviews-component
 
+    if reviews > 0
       table.review-list
         tr
           th Tour
@@ -17,4 +18,5 @@ block admin
             td= `${review.rating}/5`
             td
               button#remove-review.btn.btn--extra-small.btn--green(data-review-id=`${review.id}`) Delete
-
+    else
+      p(style="font-size: 18px;") No reviews available.
