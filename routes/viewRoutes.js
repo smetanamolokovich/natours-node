@@ -6,6 +6,7 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 
 router.use(viewController.alerts);
+router.use(viewController.getPathName);
 
 router.get(
   '/',
@@ -22,5 +23,6 @@ router.get(
   authController.protect,
   viewController.getMyBookings
 );
+router.get('/my-reviews', authController.protect, viewController.getMyReviews);
 
 module.exports = router;

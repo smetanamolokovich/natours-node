@@ -557,7 +557,7 @@ body {
 }
 
 .marker {
-  background-image: url('../img/pin.png');
+  background-image: url('/pin.f9d2ef1d.png');
   background-size: cover;
   width: 32px;
   height: 40px;
@@ -1400,29 +1400,58 @@ body {
   margin-top: 3rem;
 }
 
-table.review-list {
-  border-collapse: collapse;
-  width: 100%;
-  text-align: center;
+.review-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* review Item */
+.review-item {
+  display: flex;
+  font-size: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: all 0.2s;
+  -webkit-user-select: none;
+  user-select: none;
+  padding: 1em;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.review-list th,
-.review-list td {
-  text-align: left;
-  padding: 8px;
+.review-item.completed * {
+  color: lightgray;
+}
+
+.review-item .checkbox {
+  margin-right: 0.5rem;
+}
+
+.review-item .title,
+.review-item .textfield {
+  margin-right: auto;
+}
+
+.review-item.completed .title {
+  text-decoration: line-through;
+}
+
+.review-item.editing .title {
+  display: none;
+}
+
+.review-item .textfield {
+  display: none;
+}
+
+.review-item.editing .textfield {
+  display: block;
+}
+
+.review-title,
+.review-rating {
   font-size: 16px;
 }
 
-.review-list th:nth-child(3),
-.review-list td:nth-child(3) {
-  text-align: center;
-}
 
-.review-list tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.review-list th {
-  background-color: #55c57a;
-  color: white;
-}
+/*# sourceMappingURL=/bundle.css.map */

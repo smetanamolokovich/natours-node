@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { register } from './register';
-import { sendReview } from './review';
+import { sendReview, deleteReview } from './review';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
@@ -17,6 +17,7 @@ const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const bookBtn = document.getElementById('book-tour');
+const removeReviewBtn = document.querySelectorAll('#remove-review');
 
 // DELEGATION
 if (mapBox) {
@@ -104,5 +105,15 @@ if (reviewForm) {
   reviewForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     await sendReview(tourId, review.value, +rating);
+  });
+}
+
+if (removeReviewBtn) {
+  removeReviewBtn.forEach((button) => {
+    const { reviewId } = button.dataset;
+
+    button.addEventListener('click', async function () {
+      await deleteReview(reviewId);
+    });
   });
 }

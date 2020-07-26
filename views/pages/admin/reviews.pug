@@ -1,0 +1,20 @@
+extends ../account
+
+block admin
+  .user-view__reviews-container
+    h2.heading-secondary.ma-bt-md Manage your reviews
+
+    #reviews-component
+
+      table.review-list
+        tr
+          th Tour
+          th Rating
+          th Remove
+        each review in reviews
+          tr
+            td= review.tour.name
+            td= `${review.rating}/5`
+            td
+              button#remove-review.btn.btn--extra-small.btn--green(data-review-id=`${review.id}`) Delete
+

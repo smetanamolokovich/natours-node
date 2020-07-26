@@ -24,3 +24,17 @@ export const sendReview = async (tourID, review, rating) => {
     showAlert('error', err.response.data.message);
   }
 };
+
+export const deleteReview = async (reviewID) => {
+  try {
+    const res = await axios({
+      url: `/api/v1/reviews/${reviewID}`,
+      method: 'DELETE',
+    });
+
+    showAlert('success', 'Successfully deleted review.');
+    window.setTimeout(() => location.reload(), 1000);
+  } catch (err) {
+    showAlert('error', err.response.data.message);
+  }
+};

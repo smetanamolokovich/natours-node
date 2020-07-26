@@ -4,6 +4,12 @@ const AppError = require('../utils/AppError');
 const Booking = require('../model/bookingModel');
 const Review = require('../model/reviewModel');
 
+exports.getPathName = (req, res, next) => {
+  res.locals.pathname = req.originalUrl;
+
+  next();
+};
+
 exports.getOverview = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
 
@@ -59,10 +65,22 @@ exports.getRegisterForm = (req, res) => {
 };
 
 exports.getAccount = (req, res) => {
-  res.status(200).render('pages/account', {
+  res.status(200).render('pages/admin/settings', {
     title: 'Your account',
   });
 };
+
+exports.getMyReviews = catchAsync(async (req, res, next) => {
+  const reviews = await Review.find({ user: req.user.id }).populate({
+    path: 'tour',
+    select: 'name',
+  });
+
+  res.status(200).render('pages/admin/reviews', {
+    title: 'My reviews',
+    reviews,
+  });
+});
 
 exports.getMyBookings = catchAsync(async (req, res, next) => {
   // Find all bookings
