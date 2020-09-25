@@ -1,0 +1,8 @@
+extends ../base
+
+block content
+  main(class='main confirm-email' data-email-token=`${emailToken}`)
+    .success
+      .success__title
+        h2.heading-secondary.heading-secondary--success You have successfully confirmed your email!
+      .success__msg= msg
