@@ -44,7 +44,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
   const token = newUser.createEmailValidationToken();
-  const url = `${req.protocol}://${req.get('host')}/api/v1/users/confirm-email/${token}`;
+  const url = `${req.protocol}://${req.get('host')}/me/confirm-email/${token}`;
   await new Email(newUser, url).sendWelcome();
 
   newUser.save();
