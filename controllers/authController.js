@@ -37,16 +37,24 @@ const createAndSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signUp = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
+  const newUser = new User({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
-  const url = `${req.protocol}://${req.get('host')}/me`;
+  const token = newUser.createEmailValidationToken();
+  const url = `${req.protocol}://${req.get('host')}/me/confirm-email/${token}`;
   await new Email(newUser, url).sendWelcome();
 
-  createAndSendToken(newUser, 201, req, res);
+  newUser.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: newUser
+    }
+  })
 });
 
 exports.signIn = catchAsync(async (req, res, next) => {
@@ -222,6 +230,29 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // Update changedPasswordAt property for the user
   // Log the user in, send JWT
   createAndSendToken(user, 200, req, res);
+});
+
+exports.confirmEmail = catchAsync(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+    const user = await User.findOne({
+      emailValidationToken: hashedToken,
+      emailValidationExpires: { $gt: Date.now() },
+    });
+  
+    if (!user) {
+      return next(new AppError('Token is invalid or has expired', 400));
+    }
+  
+    user.active = true;
+    user.emailValidationToken = undefined;
+    user.emailValidationExpires = undefined;
+  
+    await user.save({validateBeforeSave: false});
+    createAndSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {

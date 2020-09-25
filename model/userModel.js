@@ -55,17 +55,19 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   active: {
     type: Boolean,
-    default: true,
+    default: false,
     select: false,
   },
+  emailValidationToken: String,
+  emailValidationExpires: Date
 });
 
-userSchema.pre(/^find/, function (next) {
-  // This points to the current query
-  this.find({ active: { $ne: false } });
+// userSchema.pre(/^find/, function (next) {
+//   // This points to the current query
+//   this.find({ active: { $ne: false } });
 
-  next();
-});
+//   next();
+// });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
@@ -114,6 +116,19 @@ userSchema.methods.createPasswordResetToken = function () {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // add 10 min => 600000 miliseconds
 
   return resetToken;
+};
+
+userSchema.methods.createEmailValidationToken = function () {
+  const validationToken = crypto.randomBytes(32).toString('hex');
+
+  this.emailValidationToken = crypto
+    .createHash('sha256')
+    .update(validationToken)
+    .digest('hex');
+
+  this.emailValidationExpires = Date.now() + 1600417654; // add 1 week
+
+  return validationToken;
 };
 
 userSchema.pre('remove', async function (next) {

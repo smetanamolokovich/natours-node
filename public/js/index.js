@@ -7,6 +7,7 @@ import { sendReview, deleteReview } from './review';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
+import { confirmEmail } from './confirmEmail';
 
 // DOM ELEMENTS
 const mapBox = document.getElementById('map');
@@ -16,6 +17,7 @@ const reviewForm = document.querySelector('.form--review');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
+const confirmationEmail = document.querySelector('.confirm-email');
 const bookBtn = document.getElementById('book-tour');
 const removeReviewBtn = document.querySelectorAll('#remove-review');
 
@@ -115,5 +117,12 @@ if (removeReviewBtn) {
     button.addEventListener('click', async function () {
       await deleteReview(reviewId);
     });
+  });
+}
+
+if (confirmationEmail) {
+  const { emailToken } = confirmationEmail.dataset;
+  window.addEventListener('load', async function () {
+    await confirmEmail(emailToken);
   });
 }
